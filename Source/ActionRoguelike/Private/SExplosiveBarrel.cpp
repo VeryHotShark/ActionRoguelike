@@ -3,6 +3,8 @@
 
 #include "SExplosiveBarrel.h"
 
+#include "SMagicProjectile.h"
+
 // Sets default values
 ASExplosiveBarrel::ASExplosiveBarrel()
 {
@@ -22,7 +24,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
 }
 
 // Called every frame
@@ -31,4 +34,17 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
+
+
+void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	ASMagicProjectile* Projectile = Cast<ASMagicProjectile>(OtherActor);
+	if(Projectile != nullptr)
+	{
+		UE_LOG(LogTemp,Display, TEXT("DUPA"));
+		RadialForceComp->FireImpulse();
+	}
+}
+
+
 
