@@ -39,9 +39,8 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	ASMagicProjectile* Projectile = Cast<ASMagicProjectile>(OtherActor);
-	if(Projectile != nullptr)
-	{
-		UE_LOG(LogTemp,Display, TEXT("DUPA"));
+	if(Projectile != nullptr) {
+		StaticMeshComp->WakeAllRigidBodies();	
 		RadialForceComp->FireImpulse();
 	}
 }
