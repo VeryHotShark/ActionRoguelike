@@ -21,12 +21,19 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 
 protected:
 	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryProjectile;
+
+	UPROPERTY(EditAnywhere, Category="Attack")
+	TSubclassOf<AActor> SecondaryProjectile;
 
 	UPROPERTY(EditAnywhere, Category="Attack")
 	UAnimMontage* AttackAnim;
 	
+	UPROPERTY(EditAnywhere, Category="Attack")
+	UAnimMontage* SecondaryAttackAnim;
+	
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_SecondaryAttack;
 
 public:
 	// Sets default values for this character's properties
@@ -49,7 +56,12 @@ protected:
 	void MoveRight(float Value);
 	void PrimaryInteract();
 	void PrimaryAttack();
+	void SecondaryAttack();
 	void PrimaryAttack_TimeElapsed();
+	void SecondaryAttack_TimeElapsed();
+
+	bool LineTraceFromCamera(FHitResult& HitResult);
+	void SpawnProjectile(TSubclassOf<AActor> Projectile,FVector Location,bool Hit,const FHitResult& HitResult );
 
 public:	
 	// Called every frame

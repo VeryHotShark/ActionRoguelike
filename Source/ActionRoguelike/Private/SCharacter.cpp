@@ -3,6 +3,7 @@
 
 #include "SCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -51,6 +52,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 	PlayerInputComponent->BindAction("Jump",IE_Pressed,this, &ASCharacter::Jump);
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ASCharacter::SecondaryAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 }
 
@@ -84,14 +86,58 @@ void ASCharacter::PrimaryAttack()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
 }
 
+void ASCharacter::SecondaryAttack() {
+	PlayAnimMontage(SecondaryAttackAnim);
+
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, 0.2f);
+}
+
 void ASCharacter::PrimaryAttack_TimeElapsed() {
+	FHitResult HitResult;
+	bool Hit = LineTraceFromCamera(HitResult);
+
+	FColor DebugColor = Hit ?FColor::Green : FColor::Red;
+	DrawDebugLine(GetWorld(), HitResult.TraceStart,Hit ? HitResult.ImpactPoint : HitResult.TraceEnd,DebugColor, false, 2);
+
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	FTransform SpawnTM = FTransform(GetControlRotation(),HandLocation);
+	SpawnProjectile(PrimaryProjectile, HandLocation,Hit, HitResult);
+}
+
+void ASCharacter::SecondaryAttack_TimeElapsed() {
+	FHitResult HitResult;
+	bool Hit = LineTraceFromCamera(HitResult);
+
+	FColor DebugColor = Hit ?FColor::Green : FColor::Red;
+	DrawDebugLine(GetWorld(), HitResult.TraceStart,Hit ? HitResult.ImpactPoint : HitResult.TraceEnd,DebugColor, false, 2);
+	
+	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_02");
+	SpawnProjectile(SecondaryProjectile, HandLocation,Hit, HitResult);
+}
+
+bool ASCharacter::LineTraceFromCamera(FHitResult& HitResult) {
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	
+	FVector CameraLocation = CameraComp->GetComponentLocation();
+	FVector EndLocation = CameraLocation + CameraComp->GetForwardVector() * 100000.0f;
+	
+	return GetWorld()->LineTraceSingleByObjectType(
+		HitResult,
+		CameraLocation,
+		EndLocation,
+		ObjectQueryParams);
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> Projectile,FVector Location,bool Hit,const FHitResult& HitResult) {
+	FRotator RotationToTarget = UKismetMathLibrary::FindLookAtRotation(Location, Hit ? HitResult.ImpactPoint : HitResult.TraceEnd);
+	FTransform SpawnTM = FTransform(RotationToTarget,Location);
+	
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
 	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	GetWorld()->SpawnActor<AActor>(Projectile, SpawnTM, SpawnParams);
 }
 
 void ASCharacter::PrimaryInteract()
