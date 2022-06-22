@@ -24,5 +24,8 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	UPROPERTY(EditAnywhere, Category="Interact Settings")
+	float InteractDistance = 300.0f;
+
 	void PrimaryInteract();
 };

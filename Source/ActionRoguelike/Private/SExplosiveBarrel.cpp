@@ -18,6 +18,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComp->SetupAttachment(StaticMeshComp);
 	RadialForceComp->ImpulseStrength = 2000.0f;
 	RadialForceComp->Radius = 700.0f;
+	RadialForceComp->SetAutoActivate(false);
+	RadialForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
 // Called when the game starts or when spawned
@@ -25,7 +27,6 @@ void ASExplosiveBarrel::BeginPlay()
 {
 	Super::BeginPlay();
 
-	StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
 }
 
 // Called every frame
@@ -35,6 +36,11 @@ void ASExplosiveBarrel::Tick(float DeltaTime)
 
 }
 
+void ASExplosiveBarrel::PostInitializeComponents() {
+	Super::PostInitializeComponents();
+	
+	StaticMeshComp->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnHit);
+}
 
 void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {

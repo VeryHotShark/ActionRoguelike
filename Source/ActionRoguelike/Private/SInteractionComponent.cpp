@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SGameplayInterface.h"
 #include "SInteractionComponent.h"
+#include "SGameplayInterface.h"
 
 // Sets default values for this component's properties
 USInteractionComponent::USInteractionComponent() {
@@ -40,7 +40,7 @@ void USInteractionComponent::PrimaryInteract() {
 	FVector EyeLocation;
 	FRotator EyeRotation;
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
-	FVector End = EyeLocation + EyeRotation.Vector() * 1000;
+	FVector End = EyeLocation + EyeRotation.Vector() * InteractDistance;
 
 	// FHitResult HitResult;
 	// bool Hit = GetWorld()->LineTraceSingleByObjectType(HitResult, EyeLocation, End, ObjectQueryParams);
@@ -59,10 +59,9 @@ void USInteractionComponent::PrimaryInteract() {
 		if (HitActor && HitActor->Implements<USGameplayInterface>()) {
 			APawn* MyPawn = Cast<APawn>(MyOwner);
 			ISGameplayInterface::Execute_Interact(HitActor, MyPawn);
+			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 10, DebugColor, false, 2);
 			break;
 		}
-
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 10, DebugColor);
 	}
 
 	DrawDebugLine(GetWorld(), EyeLocation,End,DebugColor, false, 2);
