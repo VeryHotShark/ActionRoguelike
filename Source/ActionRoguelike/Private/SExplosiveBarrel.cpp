@@ -3,6 +3,9 @@
 
 #include "SExplosiveBarrel.h"
 
+#include <string>
+
+#include "SAttributeComponent.h"
 #include "SMagicProjectile.h"
 
 // Sets default values
@@ -48,6 +51,19 @@ void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 	if(Projectile != nullptr) {
 		StaticMeshComp->WakeAllRigidBodies();	
 		RadialForceComp->FireImpulse();
+
+		if(OtherActor && OtherActor->GetInstigator() != nullptr) {
+			float Dist = FVector::Distance(OtherActor->GetActorLocation(), GetActorLocation());
+			
+			if(Dist < RadialForceComp->Radius) {
+				USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetInstigator()->GetComponentByClass(USAttributeComponent::StaticClass()));
+
+				if(AttributeComp) 
+					AttributeComp->ApplyHealthChange(-50.0f);
+			}
+		}
+
+		Destroy();
 	}
 }
 
