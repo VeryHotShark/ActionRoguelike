@@ -1,12 +1,12 @@
 {
     "Version": "1.2",
     "Data": {
-        "Source": "d:\\documents\\projects\\unrealprojects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\intern\\internscheduler.cpp",
+        "Source": "c:\\users\\veryhotshark\\documents\\unreal projects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\intern\\internscheduler.cpp",
         "ProvidedModule": "",
         "Includes": [
-            "d:\\documents\\projects\\unrealprojects\\actionroguelike\\plugins\\developer\\riderlink\\intermediate\\build\\win64\\unrealeditor\\development\\rd\\definitions.h",
-            "d:\\documents\\projects\\unrealprojects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\intern\\internscheduler.h",
-            "d:\\documents\\projects\\unrealprojects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\scheduler\\base\\ischeduler.h",
+            "c:\\users\\veryhotshark\\documents\\unreal projects\\actionroguelike\\plugins\\developer\\riderlink\\intermediate\\build\\win64\\unrealeditor\\development\\rd\\definitions.h",
+            "c:\\users\\veryhotshark\\documents\\unreal projects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\intern\\internscheduler.h",
+            "c:\\users\\veryhotshark\\documents\\unreal projects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\scheduler\\base\\ischeduler.h",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.32.31326\\include\\functional",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.32.31326\\include\\yvals_core.h",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.32.31326\\include\\vcruntime.h",
@@ -101,8 +101,8 @@
             "c:\\program files (x86)\\windows kits\\10\\include\\10.0.22000.0\\ucrt\\math.h",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.32.31326\\include\\vcruntime_startup.h",
             "c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.32.31326\\include\\xthreads.h",
-            "d:\\documents\\projects\\unrealprojects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\rd_framework_export.h",
-            "d:\\documents\\projects\\unrealprojects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\util\\guards.h"
+            "c:\\users\\veryhotshark\\documents\\unreal projects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\rd_framework_export.h",
+            "c:\\users\\veryhotshark\\documents\\unreal projects\\actionroguelike\\plugins\\developer\\riderlink\\source\\rd\\src\\rd_framework_cpp\\src\\main\\util\\guards.h"
         ],
         "ImportedModules": [],
         "ImportedHeaderUnits": []

@@ -20,6 +20,12 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditAnywhere, Category="Ability")
+	TSubclassOf<AActor> AbilityProjectile;
+	
+	UPROPERTY(EditAnywhere, Category="Ability")
+	UAnimMontage* AbilityAnim;
+	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	TSubclassOf<AActor> PrimaryProjectile;
 
@@ -32,6 +38,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Attack")
 	UAnimMontage* SecondaryAttackAnim;
 	
+	FTimerHandle TimerHandle_FirstAbility;
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
 
@@ -54,9 +61,11 @@ protected:
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void FirstAbility();
 	void PrimaryInteract();
 	void PrimaryAttack();
 	void SecondaryAttack();
+	void FirstAbility_TimeElapsed();
 	void PrimaryAttack_TimeElapsed();
 	void SecondaryAttack_TimeElapsed();
 
