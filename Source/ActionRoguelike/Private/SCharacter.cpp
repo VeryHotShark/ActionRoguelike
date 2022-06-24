@@ -25,10 +25,20 @@ ASCharacter::ASCharacter() {
 	bUseControllerRotationYaw = false;
 }
 
-// Called when the game starts or when spawned
-void ASCharacter::BeginPlay() {
-	Super::BeginPlay();
 
+void ASCharacter::PostInitializeComponents() {
+	Super::PostInitializeComponents();
+
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+}
+
+void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
+                                  float Delta) {
+
+	if (NewHealth <= 0.0f && Delta < 0.0f) {
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		DisableInput(PC);
+	}
 }
 
 // Called every frame
@@ -118,7 +128,7 @@ void ASCharacter::SecondaryAttack_TimeElapsed() {
 bool ASCharacter::SweepFromCamera(FHitResult& HitResult) {
 	FCollisionShape Shape;
 	Shape.SetSphere(20.0f);
-	
+
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 
@@ -143,7 +153,8 @@ bool ASCharacter::SweepFromCamera(FHitResult& HitResult) {
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> Projectile, FVector Location, bool Hit,
                                   const FHitResult& HitResult) {
 	// FRotator RotationToTarget = UKismetMathLibrary::FindLookAtRotation(Location, Hit ? HitResult.ImpactPoint : HitResult.TraceEnd);
-	FRotator RotationToTarget = FRotationMatrix::MakeFromX((Hit ? HitResult.ImpactPoint : HitResult.TraceEnd) - Location).Rotator();
+	FRotator RotationToTarget = FRotationMatrix::MakeFromX(
+		(Hit ? HitResult.ImpactPoint : HitResult.TraceEnd) - Location).Rotator();
 	FTransform SpawnTM = FTransform(RotationToTarget, Location);
 
 	FActorSpawnParameters SpawnParams;
