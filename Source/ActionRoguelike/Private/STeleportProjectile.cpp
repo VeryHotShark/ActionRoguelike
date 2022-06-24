@@ -10,36 +10,31 @@
 void ASTeleportProjectile::BeginPlay() {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(TimerHandle_Lifetime, this, &ASTeleportProjectile::Teleport, 1.0f);
+	GetWorldTimerManager().SetTimer(TimerHandle_DelayedDetonate, this, &ASTeleportProjectile::Explode, DetonateDelay);
 }
 
-
-void ASTeleportProjectile::PostInitializeComponents() {
-	Super::PostInitializeComponents();
-	
-	SphereComp->OnComponentHit.AddDynamic(this, &ASTeleportProjectile::ASTeleportProjectile::OnHit);
-}
-
-void ASTeleportProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
-	GetWorldTimerManager().ClearTimer(TimerHandle_Lifetime);
-	DrawDebugString(GetWorld(), GetActorLocation(), TEXT("DUPA"), nullptr, FColor::Green, 2);
-	Teleport();
-}
-
-void ASTeleportProjectile::Teleport() {
+void ASTeleportProjectile::Explode_Implementation() {
 	EffectComp->Deactivate();
 	MovementComp->StopMovementImmediately();
-	FTransform SpawnTM = FTransform(GetActorRotation(),GetActorLocation());
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DestroyVFX, SpawnTM);
-	GetWorldTimerManager().SetTimer(TimerHandle_DestroyParticle, this, &ASTeleportProjectile::Teleport_TimeElapsed, 0.2f);
+	
+	SetActorEnableCollision(false);
+	GetWorldTimerManager().ClearTimer(TimerHandle_DelayedDetonate);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactVFX, GetActorLocation(), GetActorRotation());
+
+	FTimerHandle TimerHandle_DelayedTeleport;
+	GetWorldTimerManager().SetTimer(TimerHandle_DelayedTeleport, this, &ASTeleportProjectile::TeleportInstigator, TeleportDelay);
 }
 
-void ASTeleportProjectile::Teleport_TimeElapsed() {
-	FRotator Rotation = GetActorRotation();
-	Rotation.Pitch = 0;
-	Rotation.Roll = 0;
-	GetInstigator()->TeleportTo(GetActorLocation(), Rotation, false,true);
-	Destroy();
+void ASTeleportProjectile::TeleportInstigator() {
+	AActor* ActorToTeleport = GetInstigator();
+
+	if(ensure(ActorToTeleport)) {
+		FRotator Rotation = GetActorRotation();
+		Rotation.Roll = 0;
+		Rotation.Pitch = 0;
+		ActorToTeleport->TeleportTo(GetActorLocation(), Rotation, false,true);
+		Destroy();
+	}
 }
 
 

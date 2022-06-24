@@ -15,18 +15,17 @@ class ACTIONROGUELIKE_API ASTeleportProjectile : public ASProjectileBase
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere)
-	UParticleSystem* DestroyVFX;
-	
-	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	UPROPERTY(EditDefaultsOnly, Category="Teleport")
+	float TeleportDelay;
 
-	FTimerHandle TimerHandle_Lifetime;
-	FTimerHandle TimerHandle_DestroyParticle;
-	
-	void Teleport();
-	void Teleport_TimeElapsed();
+	UPROPERTY(EditDefaultsOnly, Category="Teleport")
+	float DetonateDelay;
+
+	virtual void Explode_Implementation() override;
+
+	FTimerHandle TimerHandle_DelayedDetonate;
+
+	void TeleportInstigator();
 
 	virtual void BeginPlay() override;
-	virtual void PostInitializeComponents() override;
 };

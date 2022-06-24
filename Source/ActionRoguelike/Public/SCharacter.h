@@ -74,7 +74,7 @@ protected:
 	void PrimaryAttack_TimeElapsed();
 	void SecondaryAttack_TimeElapsed();
 
-	bool LineTraceFromCamera(FHitResult& HitResult);
+	bool SweepFromCamera(FHitResult& HitResult);
 	void SpawnProjectile(TSubclassOf<AActor> Projectile,FVector Location,bool Hit,const FHitResult& HitResult );
 
 public:	
