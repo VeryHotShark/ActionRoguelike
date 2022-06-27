@@ -18,6 +18,9 @@ public:
 	ASProjectileBase();
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="SFX")
+	USoundBase* ImpactSFX;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Effects")
 	UParticleSystem* ImpactVFX;
 	

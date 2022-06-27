@@ -11,11 +11,22 @@ class ACTIONROGUELIKE_API ASMagicProjectile : public ASProjectileBase
 {
 	GENERATED_BODY()
 
-protected:	
+public:
+	ASMagicProjectile();
+	
+protected:
+	virtual void BeginPlay() override;
+	virtual void Explode_Implementation() override;
 	virtual void PostInitializeComponents() override;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	UAudioComponent* AudioComp;
 
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	float DamageAmount = -20.0f;
+
+	UPROPERTY(EditAnywhere, Category="Projectile")
+	TSubclassOf<UCameraShakeBase> Shake;
 
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);

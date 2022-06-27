@@ -22,6 +22,9 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="VFX")
+	UParticleSystem* MuzzleVFX;
+	
 	UPROPERTY(EditAnywhere, Category="Ability")
 	TSubclassOf<AActor> AbilityProjectile;
 	
@@ -49,6 +52,8 @@ public:
 	ASCharacter();
 
 protected:
+
+
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
 	
@@ -58,12 +63,16 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USInteractionComponent* InteractionComp;
 
+	UPROPERTY(VisibleAnywhere)
+	USkeletalMeshComponent* SkeletalMeshComp;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USAttributeComponent* AttributeComp;
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
+	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
 
 	void MoveForward(float Value);
