@@ -10,11 +10,11 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "SCharacter.generated.h"
 
-// class UAnimMontage;
-// class UCameraComponent;
-// class USpringArmComponent;
-// class USAttributeComponent;
-// class USInteractionComponent;
+class UAnimMontage;
+class UCameraComponent;
+class USpringArmComponent;
+class USAttributeComponent;
+class USInteractionComponent;
 
 UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter

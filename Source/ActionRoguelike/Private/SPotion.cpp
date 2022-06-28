@@ -2,6 +2,7 @@
 
 void ASPotion::Interact_Implementation(APawn* InstigatorPawn) {
 	// logic in derived classses
+	HideAndCooldownPowerup();
 }
 
 // Sets default values

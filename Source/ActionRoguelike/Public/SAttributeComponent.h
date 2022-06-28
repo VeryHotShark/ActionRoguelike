@@ -44,4 +44,3 @@ public:
 	float GetHealth() const;	
 	float GetMaxHealth() const;
 };
-

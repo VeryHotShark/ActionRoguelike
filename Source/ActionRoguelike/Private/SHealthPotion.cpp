@@ -11,6 +11,7 @@ ASHealthPotion::ASHealthPotion() {
 }
 
 void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn) {
+	// Super::Interact_Implementation(InstigatorPawn);
 	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
 
 	if(!AttributeComp || AttributeComp->IsMaxHealth())

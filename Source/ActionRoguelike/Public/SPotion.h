@@ -12,14 +12,13 @@ UCLASS(Abstract)
 class ACTIONROGUELIKE_API ASPotion : public AActor,public ISGameplayInterface
 {
 	GENERATED_BODY()
-
-	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 	
 public:	
 	// Sets default values for this actor's properties
 	ASPotion();
 
 protected:
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* SphereComp;

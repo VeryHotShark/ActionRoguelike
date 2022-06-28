@@ -5,6 +5,7 @@
 
 // Sets default values for this component's properties
 USAttributeComponent::USAttributeComponent() {
+	MaxHealth = 100.0f;
 	Health = MaxHealth;
 }
 
