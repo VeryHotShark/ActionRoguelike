@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "SAttributeComponent.generated.h"
 
+class USAttributeComponent;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnHealthChanged, AActor*, InstigatorActor ,USAttributeComponent*, OwningComp ,float, NewHealth, float, Delta);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -18,7 +20,7 @@ public:
 	USAttributeComponent();
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attributes")
 	float Health;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
@@ -37,5 +39,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Attributes")
 	bool ApplyHealthChange(float Delta);
 
-	float GetMaxHealth() const;		
+	virtual void BeginPlay() override;
+
+	float GetHealth() const;	
+	float GetMaxHealth() const;
 };
+

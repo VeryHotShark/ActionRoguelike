@@ -4,9 +4,12 @@
 #include "SAttributeComponent.h"
 
 // Sets default values for this component's properties
-USAttributeComponent::USAttributeComponent()
-{
-	MaxHealth = 100;
+USAttributeComponent::USAttributeComponent() {
+	Health = MaxHealth;
+}
+
+void USAttributeComponent::BeginPlay() {
+	Super::BeginPlay();
 	Health = MaxHealth;
 }
 
@@ -26,6 +29,10 @@ bool USAttributeComponent::ApplyHealthChange(float Delta) {
 	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
 	
 	return ActualDelta != 0;
+}
+
+float USAttributeComponent::GetHealth() const {
+	return Health;
 }
 
 float USAttributeComponent::GetMaxHealth() const{

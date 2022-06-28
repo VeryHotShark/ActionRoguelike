@@ -8,12 +8,19 @@
 
 // Sets default values
 ASAICharacter::ASAICharacter() {
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 }
 
 void ASAICharacter::PostInitializeComponents() {
 	Super::PostInitializeComponents();
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
+	AttributeComp->OnHealthChanged.AddDynamic(this, &ASAICharacter::OnHealthChanged);
+}
+
+void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
+	float Delta) {
+	
 }
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn) {
