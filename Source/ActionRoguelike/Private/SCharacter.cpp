@@ -24,7 +24,10 @@ ASCharacter::ASCharacter() {
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	AttackDelay = 0.2f;
 	bUseControllerRotationYaw = false;
+	TimeToHitParamName = "TimeToHit";
+	HandSocketName = "Muzzle_01";
 }
 
 
@@ -45,18 +48,12 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
                                   float Delta) {
 
 	if(Delta < 0.0f) 
-		SkeletalMeshComp->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+		SkeletalMeshComp->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
 		
 	if (NewHealth <= 0.0f && Delta < 0.0f) {
 		APlayerController* PC = Cast<APlayerController>(GetController());
 		DisableInput(PC);
 	}
-}
-
-// Called every frame
-void ASCharacter::Tick(float DeltaTime) {
-	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input
@@ -96,7 +93,7 @@ void ASCharacter::MoveRight(float Value) {
 void ASCharacter::FirstAbility() {
 	PlayAnimMontage(AbilityAnim);
 
-	GetWorldTimerManager().SetTimer(TimerHandle_FirstAbility, this, &ASCharacter::FirstAbility_TimeElapsed, 0.2f);
+	GetWorldTimerManager().SetTimer(TimerHandle_FirstAbility, this, &ASCharacter::FirstAbility_TimeElapsed, AttackDelay);
 }
 
 
@@ -106,25 +103,25 @@ void ASCharacter::PrimaryAttack() {
 	UGameplayStatics::SpawnEmitterAttached
 		(MuzzleVFX,
 		GetMesh(),
-		"Muzzle_01",
+		HandSocketName,
 		FVector::ZeroVector,
 		FRotator::ZeroRotator,
 		EAttachLocation::SnapToTarget);
 
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, AttackDelay);
 }
 
 void ASCharacter::SecondaryAttack() {
 	PlayAnimMontage(SecondaryAttackAnim);
 
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, 0.2f);
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, AttackDelay);
 }
 
 void ASCharacter::FirstAbility_TimeElapsed() {
 	FHitResult HitResult;
 	bool Hit = SweepFromCamera(HitResult);
 
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 	SpawnProjectile(AbilityProjectile, HandLocation, Hit, HitResult);
 }
 
@@ -133,7 +130,7 @@ void ASCharacter::PrimaryAttack_TimeElapsed() {
 	FHitResult HitResult;
 	bool Hit = SweepFromCamera(HitResult);
 
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 	SpawnProjectile(PrimaryProjectile, HandLocation, Hit, HitResult);
 }
 

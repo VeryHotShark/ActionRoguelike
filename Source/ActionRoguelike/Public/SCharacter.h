@@ -22,6 +22,12 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(VisibleAnywhere, Category="VFX")
+	FName TimeToHitParamName;
+	
+	UPROPERTY(VisibleAnywhere, Category="VFX")
+	FName HandSocketName = "Muzzle_01";
+	
 	UPROPERTY(EditDefaultsOnly, Category="VFX")
 	UParticleSystem* MuzzleVFX;
 	
@@ -42,6 +48,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category="Attack")
 	UAnimMontage* SecondaryAttackAnim;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Attack")
+	float AttackDelay = 0.2f;
 	
 	FTimerHandle TimerHandle_FirstAbility;
 	FTimerHandle TimerHandle_PrimaryAttack;
@@ -89,9 +98,6 @@ protected:
 	void SpawnProjectile(TSubclassOf<AActor> Projectile,FVector Location,bool Hit,const FHitResult& HitResult );
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 

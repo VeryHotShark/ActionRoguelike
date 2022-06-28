@@ -17,6 +17,8 @@ class ACTIONROGUELIKE_API ASHealthPotion : public ASPotion
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 public:
-	UPROPERTY(EditAnywhere)
-	float Delta;
+	ASHealthPotion();
+	
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* MeshComp;
 };

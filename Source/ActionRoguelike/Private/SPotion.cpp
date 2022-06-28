@@ -1,19 +1,24 @@
 #include "SPotion.h"
 
 void ASPotion::Interact_Implementation(APawn* InstigatorPawn) {
-	UE_LOG(LogTemp,Display,TEXT("DUPA"));
+	// logic in derived classses
 }
 
 // Sets default values
-ASPotion::ASPotion()
-{
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
-	RootComponent = MeshComp;
+ASPotion::ASPotion() {
+	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
+	SphereComp->SetCollisionProfileName("PowerUp");
+	RootComponent = SphereComp;
+	RespawnDelay = 10.0f;
 }
 
-void ASPotion::EnableMesh(bool State) {
-	MeshComp->SetVisibility(State);
+void ASPotion::HideAndCooldownPowerup() {
+	SetPowerUpState(false);
+	FTimerDelegate RespawnDelegate = FTimerDelegate::CreateUObject(this, &ASPotion::SetPowerUpState, true);
+	GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, RespawnDelegate, RespawnDelay, false);
+}
+
+void ASPotion::SetPowerUpState(bool State) {
 	SetActorEnableCollision(State);
+	RootComponent->SetVisibility(State, true);
 }
-
-

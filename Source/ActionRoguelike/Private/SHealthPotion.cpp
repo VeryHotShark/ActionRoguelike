@@ -4,19 +4,20 @@
 #include "SHealthPotion.h"
 #include "SAttributeComponent.h"
 
+ASHealthPotion::ASHealthPotion() {
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MeshComp->SetupAttachment(RootComponent);
+}
+
 void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn) {
 	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
 
 	if(!AttributeComp || AttributeComp->IsMaxHealth())
 		return;
     
-    AttributeComp->ApplyHealthChange(Delta);
-	EnableMesh(false);
-
-	FTimerHandle TimerHandle_RespawnDelay;
-	FTimerDelegate RespawnDelegate = FTimerDelegate::CreateUObject( this, &ASPotion::EnableMesh, true);
-	GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, RespawnDelegate, RespawnDelay, false);
-	
+    if(AttributeComp->ApplyHealthChange(AttributeComp->GetMaxHealth()))
+		HideAndCooldownPowerup();
 }
 
 

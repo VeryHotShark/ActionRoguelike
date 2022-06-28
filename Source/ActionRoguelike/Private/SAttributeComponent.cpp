@@ -18,13 +18,17 @@ bool USAttributeComponent::IsMaxHealth() const {
 	return Health >= MaxHealth;
 }
 
-
 bool USAttributeComponent::ApplyHealthChange(float Delta) {
-	Health += Delta;
-	FMath::Clamp(Health, 0, MaxHealth);
+	float OldHealth = Health;
+	Health = FMath::Clamp(Health + Delta, 0, MaxHealth);
 
+	float ActualDelta = Health - OldHealth;
 	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
 	
-	return true;
+	return ActualDelta != 0;
+}
+
+float USAttributeComponent::GetMaxHealth() const{
+	return  MaxHealth;
 }
 

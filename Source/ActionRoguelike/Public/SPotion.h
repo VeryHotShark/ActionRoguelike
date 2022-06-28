@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SGameplayInterface.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "SPotion.generated.h"
 
@@ -19,13 +20,16 @@ public:
 	ASPotion();
 
 protected:
+
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* MeshComp;
+	USphereComponent* SphereComp;
 
 	UPROPERTY(EditAnywhere)
 	float RespawnDelay = 10.0f;
 
+	FTimerHandle TimerHandle_RespawnDelay;
 public:	
 
-	void EnableMesh(bool State);
+	void HideAndCooldownPowerup();
+	void SetPowerUpState(bool State);
 };
