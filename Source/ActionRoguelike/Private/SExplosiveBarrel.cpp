@@ -59,7 +59,7 @@ void ASExplosiveBarrel::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherAc
 				USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetInstigator()->GetComponentByClass(USAttributeComponent::StaticClass()));
 
 				if(AttributeComp) 
-					AttributeComp->ApplyHealthChange(-50.0f);
+					AttributeComp->ApplyHealthChange(this, -50.0f);
 			}
 		}
 

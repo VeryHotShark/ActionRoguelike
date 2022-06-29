@@ -17,7 +17,7 @@ void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn) {
 	if(!AttributeComp || AttributeComp->IsMaxHealth())
 		return;
     
-    if(AttributeComp->ApplyHealthChange(AttributeComp->GetMaxHealth()))
+    if(AttributeComp->ApplyHealthChange(this, AttributeComp->GetMaxHealth()))
 		HideAndCooldownPowerup();
 }
 

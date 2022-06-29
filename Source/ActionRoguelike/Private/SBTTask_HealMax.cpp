@@ -10,7 +10,7 @@ EBTNodeResult::Type USBTTask_HealMax::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OwnerComp.GetAIOwner()->GetPawn()->GetComponentByClass(USAttributeComponent::StaticClass()));
 
 	if(AttributeComp) {
-		bool bHealSuccess = AttributeComp->ApplyHealthChange(AttributeComp->GetMaxHealth());
+		bool bHealSuccess = AttributeComp->ApplyHealthChange(nullptr, AttributeComp->GetMaxHealth());
 		return bHealSuccess ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 	}
 	

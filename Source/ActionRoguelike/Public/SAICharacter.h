@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "SAttributeComponent.h"
+#include "SWorldUserWidget.h"
 #include "GameFramework/Character.h"
 #include "Perception/PawnSensingComponent.h"
 #include "SAICharacter.generated.h"
@@ -17,14 +18,25 @@ public:
 	ASAICharacter();
 
 protected:
+	USWorldUserWidget* ActiveHealthBar;
+	
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+
+	void SetTargetActor(AActor* NewTarget);
+	
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+	
+	UPROPERTY(VisibleAnywhere, Category="Effects")
+	FName TimeToHitParamName;
 	
 	UPROPERTY(VisibleAnywhere, Category="Components")
 	UPawnSensingComponent* PawnSensingComp;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USAttributeComponent* AttributeComp;
+
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
