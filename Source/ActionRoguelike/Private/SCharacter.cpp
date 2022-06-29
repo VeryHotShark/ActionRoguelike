@@ -56,6 +56,10 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 	}
 }
 
+void ASCharacter::HealSelf(float Amount /* = 100 */) {
+	AttributeComp->ApplyHealthChange(this, Amount);
+}
+
 // Called to bind functionality to input
 void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

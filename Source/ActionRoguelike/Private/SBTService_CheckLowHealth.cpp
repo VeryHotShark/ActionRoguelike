@@ -10,14 +10,16 @@
 void USBTService_CheckLowHealth::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-	UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
 
-	if(ensure(BlackboardComp)) {
-		APawn* AIPawn = OwnerComp.GetAIOwner()->GetPawn();
-		USAttributeComponent* AIAttributeComp = Cast<USAttributeComponent>(AIPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	APawn* AIPawn = OwnerComp.GetAIOwner()->GetPawn();
+	if(ensure(AIPawn)) {
+		USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(AIPawn);
 
-		bool bIsLowHealth = AIAttributeComp ? AIAttributeComp->GetHealth() <= Threshold : false;
+		if(ensure(AttributeComp)) {
+			bool bIsLowHealth = AttributeComp->GetHealth() / AttributeComp->GetMaxHealth() <= Threshold;
 
-		BlackboardComp->SetValueAsBool(LowHealthKey.SelectedKeyName, bIsLowHealth);
+			UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent();
+			BlackboardComp->SetValueAsBool(LowHealthKey.SelectedKeyName, bIsLowHealth);
+		}
 	}
 }

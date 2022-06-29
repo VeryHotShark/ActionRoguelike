@@ -7,12 +7,15 @@
 #include "SAttributeComponent.h"
 
 EBTNodeResult::Type USBTTask_HealMax::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) {
-	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OwnerComp.GetAIOwner()->GetPawn()->GetComponentByClass(USAttributeComponent::StaticClass()));
+	APawn* MyPawn = Cast<APawn>(OwnerComp.GetAIOwner()->GetPawn());
 
-	if(AttributeComp) {
-		bool bHealSuccess = AttributeComp->ApplyHealthChange(nullptr, AttributeComp->GetMaxHealth());
-		return bHealSuccess ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
-	}
+	if(!MyPawn)
+		return EBTNodeResult::Failed;
 	
-	return  EBTNodeResult::Failed;
+	USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(MyPawn);
+
+	if(ensure(AttributeComp)) 
+		AttributeComp->ApplyHealthChange(MyPawn, AttributeComp->GetMaxHealth());
+	
+	return  EBTNodeResult::Succeeded;
 }
