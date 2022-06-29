@@ -82,6 +82,7 @@ protected:
 
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual FVector GetPawnViewLocation() const override;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

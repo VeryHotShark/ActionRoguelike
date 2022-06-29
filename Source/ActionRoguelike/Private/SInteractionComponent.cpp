@@ -4,32 +4,8 @@
 #include "SInteractionComponent.h"
 #include "SGameplayInterface.h"
 
-// Sets default values for this component's properties
-USInteractionComponent::USInteractionComponent() {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.DebugDrawInteraction"), true, TEXT("Enable Debug Draw on Interaction Component."), ECVF_Cheat);
 
-	// ...
-}
-
-
-// Called when the game starts
-void USInteractionComponent::BeginPlay() {
-	Super::BeginPlay();
-
-	// ...
-
-}
-
-
-// Called every frame
-void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                           FActorComponentTickFunction* ThisTickFunction) {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
 
 void USInteractionComponent::PrimaryInteract() {
 	FCollisionObjectQueryParams ObjectQueryParams;
@@ -53,16 +29,21 @@ void USInteractionComponent::PrimaryInteract() {
 	bool Hit = GetWorld()->SweepMultiByObjectType(HitResults, EyeLocation, End, FQuat::Identity, ObjectQueryParams, Shape);
 	FColor DebugColor = Hit ?FColor::Green : FColor::Red;
 
+	bool bDebugDraw = CVarDebugDrawInteraction.GetValueOnGameThread();
+
 	for (FHitResult HitResult : HitResults) {
 		AActor* HitActor = HitResult.GetActor();
 
 		if (HitActor && HitActor->Implements<USGameplayInterface>()) {
 			APawn* MyPawn = Cast<APawn>(MyOwner);
 			ISGameplayInterface::Execute_Interact(HitActor, MyPawn);
-			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 10, DebugColor, false, 2);
+			
+			if(bDebugDraw)
+				DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 10, DebugColor, false, 2);
 			break;
 		}
 	}
 
-	DrawDebugLine(GetWorld(), EyeLocation,End,DebugColor, false, 2);
+	if(bDebugDraw)
+		DrawDebugLine(GetWorld(), EyeLocation,End,DebugColor, false, 2);
 }

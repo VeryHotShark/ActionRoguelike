@@ -17,6 +17,9 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	int CreditsPerKill;
+	
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TSubclassOf<AActor> MinionClass;
 	
@@ -37,10 +40,14 @@ protected:
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
 
+	UFUNCTION()
+	void RespawnPlayerElapsed(AController* Controller);
+
 public:
 	ASGameModeBase();
 
 	virtual void StartPlay() override;
+	virtual void OnActorKilled(AActor* VictimActor, AActor* Killer);
 
 	UFUNCTION(Exec)
 	void KillAll();
