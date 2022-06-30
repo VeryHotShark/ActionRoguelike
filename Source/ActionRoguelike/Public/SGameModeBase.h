@@ -19,12 +19,25 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 protected:
 	UPROPERTY(EditDefaultsOnly, Category="Credits")
 	int CreditsPerKill;
+
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	int PickupsCount;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	TSubclassOf<AActor> CoinClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	TSubclassOf<AActor> PotionClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category="Credits")
+	UEnvQuery* SpawnPickupsQuery;
 	
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	TSubclassOf<AActor> MinionClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	UEnvQuery* SpawnBotQuery;
+
 
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	float SpawnTimerInterval;
@@ -36,6 +49,9 @@ protected:
 
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	UFUNCTION()
+	void OnPickupQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
 	UFUNCTION()
 	void SpawnBotTimerElapsed();

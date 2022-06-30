@@ -18,7 +18,7 @@ class ACTIONROGUELIKE_API ASHealthPotion : public ASPotion
 
 public:
 	ASHealthPotion();
-	
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* MeshComp;
+
+	UPROPERTY(EditDefaultsOnly, Category="Potion")
+	int PotionCost = 10;
 };

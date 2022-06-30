@@ -10,6 +10,11 @@ ASPotion::ASPotion() {
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");
 	SphereComp->SetCollisionProfileName("PowerUp");
 	RootComponent = SphereComp;
+
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	MeshComp->SetupAttachment(RootComponent);
+	
 	RespawnDelay = 10.0f;
 }
 

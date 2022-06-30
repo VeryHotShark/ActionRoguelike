@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* SphereComp;
 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* MeshComp;
+
 	UPROPERTY(EditAnywhere)
 	float RespawnDelay = 10.0f;
 

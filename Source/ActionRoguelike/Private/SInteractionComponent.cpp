@@ -40,6 +40,7 @@ void USInteractionComponent::PrimaryInteract() {
 			
 			if(bDebugDraw)
 				DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, Radius, 10, DebugColor, false, 2);
+			
 			break;
 		}
 	}

@@ -3,22 +3,29 @@
 
 #include "SHealthPotion.h"
 #include "SAttributeComponent.h"
+#include "SPlayerState.h"
 
 ASHealthPotion::ASHealthPotion() {
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
-	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	MeshComp->SetupAttachment(RootComponent);
+	PotionCost = 10;
 }
 
 void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn) {
-	// Super::Interact_Implementation(InstigatorPawn);
 	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
 
 	if(!AttributeComp || AttributeComp->IsMaxHealth())
 		return;
+	
+	ASPlayerState* PlayerState = Cast<ASPlayerState>(InstigatorPawn->GetPlayerState());
+
+	if(PlayerState) {
+		if(PlayerState->GetCredits() < PotionCost)
+			return;
+		
+		PlayerState->UseCredits(PotionCost);
+	}
     
     if(AttributeComp->ApplyHealthChange(this, AttributeComp->GetMaxHealth()))
-		HideAndCooldownPowerup();
+		Super::Interact_Implementation(InstigatorPawn);
 }
 
 

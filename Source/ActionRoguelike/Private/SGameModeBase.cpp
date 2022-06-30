@@ -16,23 +16,18 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT
 ASGameModeBase::ASGameModeBase() {
 	SpawnTimerInterval = 2.0f;
 	CreditsPerKill = 10;
+	PickupsCount = 10;
 }
 
 void ASGameModeBase::StartPlay() {
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
-}
+	
+	UEnvQueryInstanceBlueprintWrapper* PickupQueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnPickupsQuery, this, EEnvQueryRunMode::AllMatching, nullptr);
 
-void ASGameModeBase::KillAll() {
-	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It) {
-		ASAICharacter* Bot = *It;
-
-		USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(Bot);
-
-		if(AttributeComp && AttributeComp->IsAlive()) 
-			AttributeComp->Kill(this);			
-	}
+	if(ensure(PickupQueryInstance))
+		PickupQueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnPickupQueryCompleted);
 }
 
 void ASGameModeBase::SpawnBotTimerElapsed() {
@@ -83,6 +78,32 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator, Params);
 }
 
+void ASGameModeBase::OnPickupQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance,
+	EEnvQueryStatus::Type QueryStatus) {
+
+	if(QueryStatus != EEnvQueryStatus::Success) {
+		UE_LOG(LogTemp, Warning, TEXT("Spawn Pickups EQS Query Failed"));	
+		return;
+	}
+	
+	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	if(Locations.Num() > 0) {
+		for (int i = 0; i < PickupsCount; i ++) {
+			int RandIndex = FMath::RandRange(0, Locations.Num() - 1);
+			
+			if(Locations.IsValidIndex(RandIndex)) {
+				TSubclassOf<AActor> RandomPickup = FMath::RandBool() ? CoinClass : PotionClass;
+				GetWorld()->SpawnActor<AActor>(RandomPickup, Locations[RandIndex], FRotator::ZeroRotator, Params);
+				Locations.RemoveAt(RandIndex);
+			}
+		}
+	}
+}
+
+
 void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer) {
 	ASCharacter* Player = Cast<ASCharacter>(VictimActor);
 
@@ -110,5 +131,16 @@ void ASGameModeBase::RespawnPlayerElapsed(AController* Controller) {
 	if(ensure(Controller)) {
 		Controller->UnPossess();
 		RestartPlayer(Controller);
+	}
+}
+
+void ASGameModeBase::KillAll() {
+	for (TActorIterator<ASAICharacter> It(GetWorld()); It; ++It) {
+		ASAICharacter* Bot = *It;
+
+		USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(Bot);
+
+		if(AttributeComp && AttributeComp->IsAlive()) 
+			AttributeComp->Kill(this);			
 	}
 }
