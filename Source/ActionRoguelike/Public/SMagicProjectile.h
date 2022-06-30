@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
@@ -24,6 +25,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Projectile")
 	float DamageAmount = -20.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category="Tags")
+	FGameplayTag ParryTag;
 
 	UPROPERTY(EditAnywhere, Category="Projectile")
 	TSubclassOf<UCameraShakeBase> Shake;

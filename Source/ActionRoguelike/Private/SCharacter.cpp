@@ -3,6 +3,7 @@
 
 #include "SCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -21,13 +22,12 @@ ASCharacter::ASCharacter() {
 
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-
-	AttackDelay = 0.2f;
-	bUseControllerRotationYaw = false;
+	
 	TimeToHitParamName = "TimeToHit";
-	HandSocketName = "Muzzle_01";
+	bUseControllerRotationYaw = false;
 }
 
 
@@ -36,32 +36,22 @@ void ASCharacter::PostInitializeComponents() {
 
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
 }
-
-FVector ASCharacter::GetPawnViewLocation() const {
-	return CameraComp->GetComponentLocation();
-}
-
 void ASCharacter::BeginPlay() {
 	Super::BeginPlay();
 
 	SkeletalMeshComp = GetMesh();
 }
 
-
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
                                   float Delta) {
-
-	if(Delta < 0.0f) 
+	if (Delta < 0.0f)
 		SkeletalMeshComp->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
-		
+
 	if (NewHealth <= 0.0f && Delta < 0.0f) {
 		APlayerController* PC = Cast<APlayerController>(GetController());
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		DisableInput(PC);
 	}
-}
-
-void ASCharacter::HealSelf(float Amount /* = 100 */) {
-	AttributeComp->ApplyHealthChange(this, Amount);
 }
 
 // Called to bind functionality to input
@@ -79,6 +69,9 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ASCharacter::SecondaryAttack);
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ASCharacter::PrimaryInteract);
 	PlayerInputComponent->BindAction("FirstAbility", IE_Pressed, this, &ASCharacter::FirstAbility);
+
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ASCharacter::SprintStart);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ASCharacter::SprintStop);
 }
 
 void ASCharacter::MoveForward(float Value) {
@@ -98,98 +91,36 @@ void ASCharacter::MoveRight(float Value) {
 	AddMovementInput(RightVector, Value);
 }
 
-void ASCharacter::FirstAbility() {
-	PlayAnimMontage(AbilityAnim);
-
-	GetWorldTimerManager().SetTimer(TimerHandle_FirstAbility, this, &ASCharacter::FirstAbility_TimeElapsed, AttackDelay);
+void ASCharacter::SprintStart() {
+	ActionComp->StartActionByName(this, "Sprint");
 }
 
+void ASCharacter::SprintStop() {
+	ActionComp->StopActionByName(this, "Sprint");
+}
+
+void ASCharacter::FirstAbility() {
+	ActionComp->StartActionByName(this, "PrimaryAbility");
+}
 
 void ASCharacter::PrimaryAttack() {
-	PlayAnimMontage(AttackAnim);
-	
-	UGameplayStatics::SpawnEmitterAttached
-		(MuzzleVFX,
-		GetMesh(),
-		HandSocketName,
-		FVector::ZeroVector,
-		FRotator::ZeroRotator,
-		EAttachLocation::SnapToTarget);
-
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, AttackDelay);
+	ActionComp->StartActionByName(this, "PrimaryAttack");
 }
 
 void ASCharacter::SecondaryAttack() {
-	PlayAnimMontage(SecondaryAttackAnim);
-
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, AttackDelay);
+	ActionComp->StartActionByName(this, "SecondaryAttack");
 }
 
-void ASCharacter::FirstAbility_TimeElapsed() {
-	FHitResult HitResult;
-	bool Hit = SweepFromCamera(HitResult);
-
-	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
-	SpawnProjectile(AbilityProjectile, HandLocation, Hit, HitResult);
-}
-
-
-void ASCharacter::PrimaryAttack_TimeElapsed() {
-	FHitResult HitResult;
-	bool Hit = SweepFromCamera(HitResult);
-
-	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
-	SpawnProjectile(PrimaryProjectile, HandLocation, Hit, HitResult);
-}
-
-void ASCharacter::SecondaryAttack_TimeElapsed() {
-	FHitResult HitResult;
-	bool Hit = SweepFromCamera(HitResult);
-
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_02");
-	SpawnProjectile(SecondaryProjectile, HandLocation, Hit, HitResult);
-}
-
-bool ASCharacter::SweepFromCamera(FHitResult& HitResult) {
-	FCollisionShape Shape;
-	Shape.SetSphere(20.0f);
-
-	FCollisionQueryParams Params;
-	Params.AddIgnoredActor(this);
-
-	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
-
-	FVector CameraLocation = CameraComp->GetComponentLocation();
-	FVector EndLocation = CameraLocation + CameraComp->GetForwardVector() * 10000.0f;
-
-	return GetWorld()->SweepSingleByObjectType(
-		HitResult,
-		CameraLocation,
-		EndLocation,
-		FQuat::Identity,
-		ObjectQueryParams,
-		Shape,
-		Params);
-}
-
-void ASCharacter::SpawnProjectile(TSubclassOf<AActor> Projectile, FVector Location, bool Hit,
-                                  const FHitResult& HitResult) {
-	// FRotator RotationToTarget = UKismetMathLibrary::FindLookAtRotation(Location, Hit ? HitResult.ImpactPoint : HitResult.TraceEnd);
-	FRotator RotationToTarget = FRotationMatrix::MakeFromX(
-		(Hit ? HitResult.ImpactPoint : HitResult.TraceEnd) - Location).Rotator();
-	FTransform SpawnTM = FTransform(RotationToTarget, Location);
-
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.Instigator = this;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-	GetWorld()->SpawnActor<AActor>(Projectile, SpawnTM, SpawnParams);
+void ASCharacter::HealSelf(float Amount /* = 100 */) {
+	AttributeComp->ApplyHealthChange(this, Amount);
 }
 
 void ASCharacter::PrimaryInteract() {
 	if (InteractionComp)
 		InteractionComp->PrimaryInteract();
 }
+
+FVector ASCharacter::GetPawnViewLocation() const {
+	return CameraComp->GetComponentLocation();
+}
+

@@ -13,6 +13,7 @@
 
 // Sets default values
 ASAICharacter::ASAICharacter() {
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;

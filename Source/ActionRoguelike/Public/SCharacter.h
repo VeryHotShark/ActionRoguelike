@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
@@ -12,6 +13,7 @@
 
 class UAnimMontage;
 class UCameraComponent;
+class USActionComponent;
 class USpringArmComponent;
 class USAttributeComponent;
 class USInteractionComponent;
@@ -24,40 +26,8 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 protected:
 	UPROPERTY(VisibleAnywhere, Category="VFX")
 	FName TimeToHitParamName;
-	
-	UPROPERTY(VisibleAnywhere, Category="VFX")
-	FName HandSocketName = "Muzzle_01";
-	
-	UPROPERTY(EditDefaultsOnly, Category="VFX")
-	UParticleSystem* MuzzleVFX;
-	
-	UPROPERTY(EditAnywhere, Category="Ability")
-	TSubclassOf<AActor> AbilityProjectile;
-	
-	UPROPERTY(EditAnywhere, Category="Ability")
-	UAnimMontage* AbilityAnim;
-	
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> PrimaryProjectile;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	TSubclassOf<AActor> SecondaryProjectile;
-
-	UPROPERTY(EditAnywhere, Category="Attack")
-	UAnimMontage* AttackAnim;
-	
-	UPROPERTY(EditAnywhere, Category="Attack")
-	UAnimMontage* SecondaryAttackAnim;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Attack")
-	float AttackDelay = 0.2f;
-	
-	FTimerHandle TimerHandle_FirstAbility;
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
 
 public:
-	// Sets default values for this character's properties
 	ASCharacter();
 
 protected:
@@ -73,6 +43,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* SkeletalMeshComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	USActionComponent* ActionComp;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USAttributeComponent* AttributeComp;
@@ -86,16 +59,12 @@ protected:
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
+	void SprintStart();
+	void SprintStop();
 	void FirstAbility();
 	void PrimaryInteract();
 	void PrimaryAttack();
 	void SecondaryAttack();
-	void FirstAbility_TimeElapsed();
-	void PrimaryAttack_TimeElapsed();
-	void SecondaryAttack_TimeElapsed();
-
-	bool SweepFromCamera(FHitResult& HitResult);
-	void SpawnProjectile(TSubclassOf<AActor> Projectile,FVector Location,bool Hit,const FHitResult& HitResult );
 
 public:	
 	// Called to bind functionality to input
