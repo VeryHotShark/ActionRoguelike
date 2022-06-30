@@ -19,8 +19,7 @@ class USAttributeComponent;
 class USInteractionComponent;
 
 UCLASS()
-class ACTIONROGUELIKE_API ASCharacter : public ACharacter
-{
+class ACTIONROGUELIKE_API ASCharacter : public ACharacter {
 	GENERATED_BODY()
 
 protected:
@@ -31,22 +30,21 @@ public:
 	ASCharacter();
 
 protected:
-
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent* CameraComp;
-	
-	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
-	USInteractionComponent* InteractionComp;
+	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent* SkeletalMeshComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
+	USInteractionComponent* InteractionComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USActionComponent* ActionComp;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components")
 	USAttributeComponent* AttributeComp;
 
@@ -66,10 +64,10 @@ protected:
 	void PrimaryAttack();
 	void SecondaryAttack();
 
-public:	
+public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 	UFUNCTION(Exec)
 	void HealSelf(float Amount = 100);
 };

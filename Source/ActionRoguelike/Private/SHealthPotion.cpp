@@ -14,10 +14,12 @@ void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn) {
 
 	if(!AttributeComp || AttributeComp->IsMaxHealth())
 		return;
-	
-	ASPlayerState* PlayerState = Cast<ASPlayerState>(InstigatorPawn->GetPlayerState());
 
-	if(PlayerState) {
+	
+	// ASPlayerState* PlayerState = Cast<ASPlayerState>(InstigatorPawn->GetPlayerState());
+	// if(PlayerState) {
+
+	if(ASPlayerState* PlayerState = InstigatorPawn->GetPlayerState<ASPlayerState>()) {
 		if(PlayerState->GetCredits() < PotionCost)
 			return;
 		

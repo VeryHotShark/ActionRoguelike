@@ -17,6 +17,8 @@ ASGameModeBase::ASGameModeBase() {
 	SpawnTimerInterval = 2.0f;
 	CreditsPerKill = 10;
 	PickupsCount = 10;
+
+	PlayerStateClass = ASPlayerState::StaticClass();
 }
 
 void ASGameModeBase::StartPlay() {
@@ -119,8 +121,8 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* Killer) {
 		ASCharacter* PlayerKiller = Cast<ASCharacter>(Killer);
 		
 		if(PlayerKiller) {
-			ASPlayerState* PlayerState = Cast<ASPlayerState>(PlayerKiller->GetPlayerState());
-			PlayerState->GrantCredits(CreditsPerKill);
+			if(ASPlayerState* PlayerState = PlayerKiller->GetPlayerState<ASPlayerState>())
+				PlayerState->GrantCredits(CreditsPerKill);
 		}
 	}
 

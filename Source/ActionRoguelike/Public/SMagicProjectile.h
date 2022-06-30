@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "SActionEffect.h"
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
@@ -28,6 +29,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Tags")
 	FGameplayTag ParryTag;
+
+	UPROPERTY(EditDefaultsOnly, Category="Effects")
+	TSubclassOf<USActionEffect> BurningActionClass;
 
 	UPROPERTY(EditAnywhere, Category="Projectile")
 	TSubclassOf<UCameraShakeBase> Shake;
