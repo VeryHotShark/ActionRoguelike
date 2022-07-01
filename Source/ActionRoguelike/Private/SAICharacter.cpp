@@ -77,7 +77,17 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget) {
 
 	if(AIC) {
 		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
-		BBComp->SetValueAsObject("TargetActor", NewTarget);
+		AActor* CurrentTarget = Cast<AActor>(BBComp->GetValueAsObject("TargetActor"));
+
+		if(CurrentTarget != NewTarget) {
+			BBComp->SetValueAsObject("TargetActor", NewTarget);
+
+			if(ActiveNotice == nullptr && ensure(NoticeWidgetClass)) {
+				ActiveNotice = CreateWidget<USWorldUserWidget>(GetWorld(), NoticeWidgetClass);
+				ActiveNotice->AttachedActor = this;
+				ActiveNotice->AddToViewport();
+			}
+		}
 	}
 }
 

@@ -20,6 +20,17 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
 }
 
+bool USActionComponent::HasAction(TSubclassOf<USAction> ActionClass) {
+	FName ActionName = ActionClass.GetDefaultObject()->ActionName;
+
+	for (USAction* Action : Actions) {
+		if (Action && Action->ActionName == ActionName) 
+			return true;
+	}
+
+	return false;
+}
+
 void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> ActionClass) {
 	if (!ensure(ActionClass))
 		return;

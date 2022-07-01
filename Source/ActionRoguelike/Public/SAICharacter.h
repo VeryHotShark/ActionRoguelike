@@ -19,6 +19,10 @@ public:
 	ASAICharacter();
 
 protected:
+	UPROPERTY()
+	USWorldUserWidget* ActiveNotice;
+
+	UPROPERTY()
 	USWorldUserWidget* ActiveHealthBar;
 	
 	virtual void BeginPlay() override;
@@ -28,6 +32,9 @@ protected:
 	
 	UPROPERTY(EditDefaultsOnly, Category="UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<USWorldUserWidget> NoticeWidgetClass;
 	
 	UPROPERTY(VisibleAnywhere, Category="Effects")
 	FName TimeToHitParamName;

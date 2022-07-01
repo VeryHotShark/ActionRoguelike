@@ -4,7 +4,7 @@
 #include "SInteractionComponent.h"
 #include "SGameplayInterface.h"
 
-static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.DebugDrawInteraction"), true, TEXT("Enable Debug Draw on Interaction Component."), ECVF_Cheat);
+static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.DebugDrawInteraction"), false, TEXT("Enable Debug Draw on Interaction Component."), ECVF_Cheat);
 
 USInteractionComponent::USInteractionComponent() {
 	PrimaryComponentTick.bCanEverTick = true;
