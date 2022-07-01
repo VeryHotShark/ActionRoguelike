@@ -44,8 +44,10 @@ void ASCharacter::BeginPlay() {
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth,
                                   float Delta) {
-	if (Delta < 0.0f)
+	if (Delta < 0.0f) {
 		SkeletalMeshComp->SetScalarParameterValueOnMaterials(TimeToHitParamName, GetWorld()->TimeSeconds);
+		AttributeComp->AddRage(FMath::Abs(Delta));	
+	}
 
 	if (NewHealth <= 0.0f && Delta < 0.0f) {
 		APlayerController* PC = Cast<APlayerController>(GetController());

@@ -27,6 +27,8 @@ bool USAttributeComponent::IsActorAlive(AActor* Actor) {
 USAttributeComponent::USAttributeComponent() {
 	MaxHealth = 100.0f;
 	Health = MaxHealth;
+	MaxRage = 100.0f;
+	Rage = 0.0f;
 }
 
 void USAttributeComponent::BeginPlay() {
@@ -69,6 +71,26 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	}
 	
 	return ActualDelta != 0;
+}
+
+bool USAttributeComponent::AddRage(float Delta) {
+	const float OldRage = Rage;
+	Rage = FMath::Clamp(Rage + Delta, 0, MaxRage);
+
+	const float ActualDelta = Rage - OldRage;
+	OnRageChanged.Broadcast(this, Rage);
+	
+	return ActualDelta != 0;
+}
+
+bool USAttributeComponent::UseRage(float Delta) {
+	if(Delta > Rage)
+		return  false;
+
+	Rage = FMath::Clamp(Rage - Delta, 0, MaxRage);
+	OnRageChanged.Broadcast(this, Rage);
+	
+	return true;
 }
 
 float USAttributeComponent::GetHealth() const {
