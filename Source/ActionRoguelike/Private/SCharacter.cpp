@@ -20,9 +20,9 @@ ASCharacter::ASCharacter() {
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
 
-	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
-	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
 	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttributeComp");
+	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("InteractionComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	
@@ -118,7 +118,7 @@ void ASCharacter::HealSelf(float Amount /* = 100 */) {
 }
 
 void ASCharacter::PrimaryInteract() {
-	if (InteractionComp)
+	if (InteractionComp) 
 		InteractionComp->PrimaryInteract();
 }
 
