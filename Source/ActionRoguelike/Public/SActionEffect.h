@@ -6,9 +6,6 @@
 #include "SAction.h"
 #include "SActionEffect.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class ACTIONROGUELIKE_API USActionEffect : public USAction
 {

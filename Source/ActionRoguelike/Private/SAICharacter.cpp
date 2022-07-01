@@ -83,5 +83,5 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget) {
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn) {
 	SetTargetActor(Pawn);
-	DrawDebugString(GetWorld(), Pawn->GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+	// DrawDebugString(GetWorld(), Pawn->GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
 }
