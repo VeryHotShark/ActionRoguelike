@@ -27,10 +27,10 @@ public:
 	USAttributeComponent();
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(VisibleAnywhere,Replicated, BlueprintReadOnly, Category="Attributes")
 	float Health;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
+	UPROPERTY(EditDefaultsOnly,Replicated, BlueprintReadOnly, Category="Attributes")
 	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Attributes")
@@ -38,6 +38,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Attributes")
 	float MaxRage;
+
+	UFUNCTION(NetMulticast, Reliable) // @FIXME : Mark as unreliable once we moved 'state' out of scharacter
+	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	bool Kill(AActor* InstigatorActor);

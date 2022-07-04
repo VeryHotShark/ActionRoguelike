@@ -16,6 +16,8 @@ ASPotion::ASPotion() {
 	MeshComp->SetupAttachment(RootComponent);
 	
 	RespawnDelay = 10.0f;
+
+	SetReplicates(true);
 }
 
 void ASPotion::HideAndCooldownPowerup() {
