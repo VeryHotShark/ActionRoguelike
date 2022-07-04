@@ -3,6 +3,7 @@
 USActionComponent::USActionComponent() {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	SetIsReplicatedByDefault(true);
 }
 
 void USActionComponent::BeginPlay() {
@@ -21,10 +22,10 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 }
 
 bool USActionComponent::HasAction(TSubclassOf<USAction> ActionClass) {
-	FName ActionName = ActionClass.GetDefaultObject()->ActionName;
+	// FName ActionName = ActionClass.GetDefaultObject()->ActionName;
 
 	for (USAction* Action : Actions) {
-		if (Action && Action->ActionName == ActionName) 
+		if (Action && Action->IsA(ActionClass)) 
 			return true;
 	}
 
@@ -53,6 +54,10 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName) 
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
 				continue;
 			}
+
+			// Is Client?
+			if(!GetOwner()->HasAuthority())
+				ServerStartAction(Instigator, ActionName);
 			
 			Action->StartAction(Instigator);
 			return true;
@@ -80,4 +85,8 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove) {
 		return;
 	
 	Actions.Remove(ActionToRemove);
+}
+
+void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName) {
+	StartActionByName(Instigator, ActionName);
 }

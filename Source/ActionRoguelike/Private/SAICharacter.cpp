@@ -85,7 +85,7 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget) {
 			if(ActiveNotice == nullptr && ensure(NoticeWidgetClass)) {
 				ActiveNotice = CreateWidget<USWorldUserWidget>(GetWorld(), NoticeWidgetClass);
 				ActiveNotice->AttachedActor = this;
-				ActiveNotice->AddToViewport();
+				ActiveNotice->AddToViewport(10);
 			}
 		}
 	}

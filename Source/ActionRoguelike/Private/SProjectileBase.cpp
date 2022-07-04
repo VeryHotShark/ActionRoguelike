@@ -1,8 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "SProjectileBase.h"
-
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
@@ -24,7 +20,7 @@ ASProjectileBase::ASProjectileBase() {
 	MovementComp->bRotationFollowsVelocity = true;
 	MovementComp->bInitialVelocityInLocalSpace = true;
 
-	// SetReplicates(true);
+	SetReplicates(true);
 }
 
 // Called when the game starts or when spawned
