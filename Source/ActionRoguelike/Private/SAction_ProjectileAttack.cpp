@@ -27,15 +27,17 @@ void USAction_ProjectileAttack::StartAction_Implementation(AActor* Instigator) {
 			FRotator::ZeroRotator,
 			EAttachLocation::SnapToTarget);
 
-		FTimerHandle TimerHandle_AttackDelay;
-		FTimerDelegate Delegate;
-		Delegate.BindUFunction(this, "AttackDelay_Elapsed", Character);
-		
-		GetWorld()->GetTimerManager().SetTimer(
-			TimerHandle_AttackDelay,
-			Delegate,
-			AttackDelay,
-			false);
+		if(Character->HasAuthority()) {
+			FTimerHandle TimerHandle_AttackDelay;
+			FTimerDelegate Delegate;
+			Delegate.BindUFunction(this, "AttackDelay_Elapsed", Character);
+			
+			GetWorld()->GetTimerManager().SetTimer(
+				TimerHandle_AttackDelay,
+				Delegate,
+				AttackDelay,
+				false);
+		}
 	}
 }
 

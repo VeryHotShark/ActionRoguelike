@@ -11,6 +11,8 @@
 ASMagicProjectile::ASMagicProjectile() {
 	AudioComp = CreateDefaultSubobject<UAudioComponent>("AudioComp");
 	AudioComp->SetupAttachment(RootComponent);
+
+	SetReplicates(true);
 }
 
 void ASMagicProjectile::PostInitializeComponents() {

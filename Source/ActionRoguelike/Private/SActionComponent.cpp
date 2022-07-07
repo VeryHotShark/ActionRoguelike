@@ -31,11 +31,9 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	for(USAction* Action : Actions) {
 		FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
 
-		FString ActionMsg = FString::Printf(TEXT("[%s] Action %s : IsRinning: %s : Outer: %s" ),
+		FString ActionMsg = FString::Printf(TEXT("[%s] Action %s" ),
 			*GetNameSafe(GetOwner()),
-			*Action->ActionName.ToString(),
-			Action->IsRunning() ? TEXT("true") : TEXT("false"),
-			*GetNameSafe(GetOuter()));
+			*GetNameSafe(Action));
 
 		LogOnScreen(this,ActionMsg, TextColor, 0.0f);
 	}
