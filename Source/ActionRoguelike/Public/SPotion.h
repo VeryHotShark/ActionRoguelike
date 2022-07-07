@@ -18,6 +18,12 @@ public:
 	ASPotion();
 
 protected:
+	UPROPERTY(ReplicatedUsing="OnRep_IsActive")
+	bool bIsActive;
+
+	UFUNCTION()
+	void OnRep_IsActive();
+	
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 
 	UPROPERTY(VisibleAnywhere)

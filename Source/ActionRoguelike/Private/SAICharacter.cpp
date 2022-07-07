@@ -77,21 +77,40 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget) {
 
 	if(AIC) {
 		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
-		AActor* CurrentTarget = Cast<AActor>(BBComp->GetValueAsObject("TargetActor"));
+		BBComp->SetValueAsObject("TargetActor", NewTarget);
 
-		if(CurrentTarget != NewTarget) {
-			BBComp->SetValueAsObject("TargetActor", NewTarget);
-
-			if(ActiveNotice == nullptr && ensure(NoticeWidgetClass)) {
-				ActiveNotice = CreateWidget<USWorldUserWidget>(GetWorld(), NoticeWidgetClass);
-				ActiveNotice->AttachedActor = this;
-				ActiveNotice->AddToViewport(10);
-			}
+		if(ActiveNotice == nullptr && ensure(NoticeWidgetClass)) {
+			ActiveNotice = CreateWidget<USWorldUserWidget>(GetWorld(), NoticeWidgetClass);
+			ActiveNotice->AttachedActor = this;
+			ActiveNotice->AddToViewport(10);
 		}
 	}
 }
 
+AActor* ASAICharacter::GetTargetActor() const {
+	AAIController* AIC = Cast<AAIController>(GetController());
+
+	if(AIC) {
+		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
+		return Cast<AActor>(BBComp->GetValueAsObject("TargetActor"));
+	}
+
+	return nullptr;
+}
+
 void ASAICharacter::OnPawnSeen(APawn* Pawn) {
-	SetTargetActor(Pawn);
+	if(GetTargetActor() != Pawn) {
+		SetTargetActor(Pawn);
+		MulticastPawnSeen();
+	}	
 	// DrawDebugString(GetWorld(), Pawn->GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+}
+
+void ASAICharacter::MulticastPawnSeen_Implementation() {
+	USWorldUserWidget* NewWidget = CreateWidget<USWorldUserWidget>(GetWorld(), NoticeWidgetClass);
+
+	if(NewWidget) {
+		NewWidget->AttachedActor = this;
+		NewWidget->AddToViewport(10);
+	}
 }

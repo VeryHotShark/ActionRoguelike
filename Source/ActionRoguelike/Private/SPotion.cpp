@@ -1,5 +1,8 @@
 #include "SPotion.h"
 
+#include "Net/UnrealNetwork.h"
+
+
 void ASPotion::Interact_Implementation(APawn* InstigatorPawn) {
 	// logic in derived classses
 	HideAndCooldownPowerup();
@@ -27,6 +30,17 @@ void ASPotion::HideAndCooldownPowerup() {
 }
 
 void ASPotion::SetPowerUpState(bool State) {
-	SetActorEnableCollision(State);
-	RootComponent->SetVisibility(State, true);
+	bIsActive = State;
+	OnRep_IsActive();
+}
+
+void ASPotion::OnRep_IsActive() {
+	SetActorEnableCollision(bIsActive);
+	RootComponent->SetVisibility(bIsActive, true);
+}
+
+void ASPotion::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPotion, bIsActive);
 }
