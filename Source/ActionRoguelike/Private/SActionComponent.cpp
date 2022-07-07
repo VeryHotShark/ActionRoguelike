@@ -54,6 +54,12 @@ void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> Acti
 	if (!ensure(ActionClass))
 		return;
 
+	// Skip for clients
+	if(!GetOwner()->HasAuthority()) {
+		UE_LOG(LogTemp, Warning, TEXT("Client attempting to AddAction. [Class: %s]"), *GetNameSafe(ActionClass));
+		return;
+	}
+
 	USAction* NewAction = NewObject<USAction>(this, ActionClass);
 
 	if (ensure(NewAction)) {
@@ -91,6 +97,10 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName) {
 	for (USAction* Action : Actions) {
 		if (Action && Action->ActionName == ActionName) {
 			if(Action->IsRunning()) {
+				// Is Client?
+				if(!GetOwner()->HasAuthority())
+					ServerStopAction(Instigator, ActionName);
+				
 				Action->StopAction(Instigator);
 				return true;
 			}
@@ -109,6 +119,10 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove) {
 
 void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName) {
 	StartActionByName(Instigator, ActionName);
+}
+
+void USActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName) {
+	StopActionByName(Instigator, ActionName);
 }
 
 void USActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {

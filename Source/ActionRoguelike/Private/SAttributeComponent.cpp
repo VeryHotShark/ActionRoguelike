@@ -62,7 +62,7 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 
 	const float OldHealth = Health;
 	const float NewHealth = FMath::Clamp(Health + Delta, 0, MaxHealth);
-	const float ActualDelta = Health - OldHealth;
+	const float ActualDelta = NewHealth - OldHealth;
 
 	// Is Server?
 	if(GetOwner()->HasAuthority()) {
@@ -78,7 +78,6 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 				GM->OnActorKilled(GetOwner(), InstigatorActor);
 		}
 	}
-
 	
 	return ActualDelta != 0;
 }
