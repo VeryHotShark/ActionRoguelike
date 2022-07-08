@@ -3,20 +3,48 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SMonsterData.h"
+#include "Engine/DataTable.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "EnvironmentQuery/EnvQueryInstanceBlueprintWrapper.h"
 #include "GameFramework/GameModeBase.h"
 #include "SGameModeBase.generated.h"
 
-/**
- * 
- */
+USTRUCT(BlueprintType)
+struct FMonsterInfoRow : public FTableRowBase {
+	GENERATED_BODY()
+
+public:
+	FMonsterInfoRow() {
+		Weight = 1.0f;
+		SpawnCost = 5.0f;
+		KillReward = 20.0f;
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FPrimaryAssetId MonsterId;
+	// USMonsterData* MonsterData;
+	// TSubclassOf<AActor> MonsterClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Weight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnCost;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float KillReward;
+};
+
 UCLASS()
 class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="AI")
+	UDataTable* MonsterTable;
+	
 	UPROPERTY(EditDefaultsOnly, Category="Credits")
 	int CreditsPerKill;
 
@@ -32,8 +60,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category="Credits")
 	UEnvQuery* SpawnPickupsQuery;
 	
-	UPROPERTY(EditDefaultsOnly, Category="AI")
-	TSubclassOf<AActor> MinionClass;
+	// UPROPERTY(EditDefaultsOnly, Category="AI")
+	// TSubclassOf<AActor> MinionClass;
 	
 	UPROPERTY(EditDefaultsOnly, Category="AI")
 	UEnvQuery* SpawnBotQuery;
@@ -47,6 +75,8 @@ protected:
 	
 	FTimerHandle TimerHandle_SpawnBots;
 
+	void OnMonsterLoaded(FPrimaryAssetId LoadedID, FVector SpawnLocation);
+	
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
