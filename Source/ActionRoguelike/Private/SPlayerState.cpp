@@ -3,6 +3,7 @@
 
 #include "SPlayerState.h"
 
+#include "SSaveGame.h"
 #include "Net/UnrealNetwork.h"
 
 void ASPlayerState::OnRep_Credits(int OldCredits) {
@@ -17,6 +18,18 @@ void ASPlayerState::GrantCredits(int Count) {
 	if(Count > 0) {
 		Credits += Count;
 		OnCreditsChanged.Broadcast(Credits);	
+	}
+}
+
+void ASPlayerState::SavePlayerState_Implementation(USSaveGame* SaveObject) {
+	if(SaveObject) {
+		SaveObject->SavedCredits = Credits;
+	}
+}
+
+void ASPlayerState::LoadPlayerState_Implementation(USSaveGame* SaveObject) {
+	if(SaveObject) {
+		Credits = SaveObject->SavedCredits;
 	}
 }
 

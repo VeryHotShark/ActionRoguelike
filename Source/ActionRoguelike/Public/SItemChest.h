@@ -12,6 +12,7 @@ class ACTIONROGUELIKE_API ASItemChest : public AActor, public  ISGameplayInterfa
 {
 	GENERATED_BODY()
 
+	virtual void OnActorLoaded_Implementation() override;
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 	
 public:	
@@ -19,7 +20,7 @@ public:
 	ASItemChest();
 
 protected:
-	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing="OnRep_LidOpened", BlueprintReadOnly, SaveGame)
     bool bLidOpen;
 
 	UFUNCTION()
