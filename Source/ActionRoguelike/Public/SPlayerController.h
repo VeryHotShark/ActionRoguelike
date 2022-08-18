@@ -6,7 +6,7 @@
 #include "SPlayerController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPawnChanged, APawn*, NewPawn);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged, ASPlayerState*, NewPlayerState);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerStateChanged, APlayerState*, NewPlayerState);
 
 UCLASS()
 class ACTIONROGUELIKE_API ASPlayerController : public APlayerController
@@ -14,6 +14,17 @@ class ACTIONROGUELIKE_API ASPlayerController : public APlayerController
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY(EditDefaultsOnly, Category="UI")
+	TSubclassOf<UUserWidget> PauseMenuClass;
+
+	UPROPERTY()
+	UUserWidget* PauseMenuInstance;
+
+	UFUNCTION(BlueprintCallable)
+	void TogglePauseMenu();
+
+	virtual void SetupInputComponent() override;
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnPawnChanged OnPawnChanged;
 
@@ -26,4 +37,6 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void BlueprintBeginPlayingState();
+
+	virtual void OnRep_PlayerState() override;
 };

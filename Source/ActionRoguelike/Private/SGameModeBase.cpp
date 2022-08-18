@@ -31,13 +31,13 @@ ASGameModeBase::ASGameModeBase() {
 }
 
 void ASGameModeBase::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) {
-	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-
 	ASPlayerState* PS = NewPlayer->GetPlayerState<ASPlayerState>();
 
 	if(PS) {
 		PS->LoadPlayerState(CurrentSaveGame);
 	}
+	
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }
 
 void ASGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) {
