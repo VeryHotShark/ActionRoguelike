@@ -4,6 +4,7 @@
 #include "SActionEffect.h"
 
 #include "SActionComponent.h"
+#include "GameFramework/GameStateBase.h"
 
 USActionEffect::USActionEffect() {
 	bAutoStart = true;
@@ -23,6 +24,18 @@ void USActionEffect::StartAction_Implementation(AActor* Instigator) {
 		Delegate.BindUFunction(this, "ExecutePeriodicEffect", Instigator);
 		GetWorld()->GetTimerManager().SetTimer(PeriodHandle, Delegate, Period, true);
 	}
+}
+
+
+float USActionEffect::GetTimeRemaining() const {
+	AGameStateBase* GS = GetWorld()->GetGameState<AGameStateBase>();
+
+	if(GS) {
+		float EndTime = TimeStarted + Duration;
+		return EndTime - GS->GetServerWorldTimeSeconds();
+	}
+
+	return Duration;
 }
 
 void USActionEffect::StopAction_Implementation(AActor* Instigator) {
