@@ -10,6 +10,17 @@ USActionComponent::USActionComponent() {
 	SetIsReplicatedByDefault(true);
 }
 
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason) {
+	TArray<USAction*> ActionsCopy = Actions;
+
+	for (USAction* Action : ActionsCopy) {
+		if(Action && Action->IsRunning())
+			Action->StopAction(GetOwner());
+	}
+	
+	Super::EndPlay(EndPlayReason);
+}
+
 void USActionComponent::BeginPlay() {
 	Super::BeginPlay();
 
