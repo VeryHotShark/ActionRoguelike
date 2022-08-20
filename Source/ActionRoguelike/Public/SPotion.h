@@ -40,4 +40,6 @@ public:
 
 	void HideAndCooldownPowerup();
 	void SetPowerUpState(bool State);
+
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 };

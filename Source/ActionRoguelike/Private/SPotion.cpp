@@ -8,6 +8,10 @@ void ASPotion::Interact_Implementation(APawn* InstigatorPawn) {
 	HideAndCooldownPowerup();
 }
 
+FText ASPotion::GetInteractText_Implementation(APawn* InstigatorPawn) {
+	return FText::GetEmpty();
+}
+
 // Sets default values
 ASPotion::ASPotion() {
 	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComp");

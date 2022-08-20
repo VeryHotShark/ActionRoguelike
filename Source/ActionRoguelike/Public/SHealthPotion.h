@@ -21,4 +21,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category="Potion")
 	int PotionCost = 10;
+
+	virtual FText GetInteractText_Implementation(APawn* InstigatorPawn) override;
 };
